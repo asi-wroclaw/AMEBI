@@ -29,7 +29,7 @@ namespace AMEBI.Domain.Services
 
             var expires = now.AddMinutes(30);
             var signiagCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes("test_key_123")), SecurityAlgorithms.HmacSha256);
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes("test_key_123test_key_123test_key_123")), SecurityAlgorithms.HmacSha256);
             
             var jwt = new JwtSecurityToken
             (
