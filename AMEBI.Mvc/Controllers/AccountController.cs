@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using AMEBI.Domain.Services;
 using AMEBI.Domain.ViewModel;
@@ -26,7 +27,10 @@ namespace AMEBI.Mvc.Controllers
             var user = await _userService.FindAsync(model.Username);
 
             if(user == null)
+            {
                 await _userService.AddAsync(model.Username, model.Password);
+                user = await _userService.FindAsync(model.Username);
+            }
 
             _userService.LoginAsync(model.Username, model.Password);
 
