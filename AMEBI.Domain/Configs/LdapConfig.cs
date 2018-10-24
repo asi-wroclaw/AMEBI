@@ -10,5 +10,6 @@ namespace AMEBI.Domain.LDAP
         public string AppServiceDn { get; set; }
         public string LdapHost { get; set; }
         public string SearchFilter { get; set; }
+        public int ConnectionTimeout { get; set; }
     }
 }
