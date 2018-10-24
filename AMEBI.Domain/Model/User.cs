@@ -8,7 +8,6 @@ namespace AMEBI.Domain.Model
         public string DisplayName { get; set; }
         public string Password { get; set; }
         public string Username { get; internal set; }
-        public bool IsAdmin { get; set; }
         
         public User(string username, string password)
         {
