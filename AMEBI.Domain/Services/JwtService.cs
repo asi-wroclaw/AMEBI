@@ -2,16 +2,20 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AMEBI.Domain.Configs;
 using AMEBI.Domain.Extensions;
 using AMEBI.Domain.Model;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AMEBI.Domain.Services
 {
     public class JwtService : IJwtService
     {
-        public JwtService()
+        private readonly AppConfig _config;
+        public JwtService(IOptions<AppConfig> config)
         {
+            _config = config.Value;
         }
         
         public JwtToken CreateToken(Guid userId, string role)
@@ -29,11 +33,11 @@ namespace AMEBI.Domain.Services
 
             var expires = now.AddMinutes(30);
             var signiagCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes("test_key_123test_key_123test_key_123")), SecurityAlgorithms.HmacSha256);
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.IssuerSigningKey)), SecurityAlgorithms.HmacSha256);
             
             var jwt = new JwtSecurityToken
             (
-                issuer: "http://localhost:5000",
+                issuer: _config.ValidIssuer,
                 claims: claims,
                 notBefore: now,
                 expires: expires,

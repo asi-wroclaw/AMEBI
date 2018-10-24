@@ -8,6 +8,5 @@ namespace AMEBI.Domain.Services
         Task<User> FindAsync(string username);
         Task AddAsync(string username, string password);
         void LoginAsync(string username, string password);
-        Task LogoutAsync();
     }
 }

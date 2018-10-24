@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AMEBI.Domain.Configs;
 using AMEBI.Domain.EF;
 using AMEBI.Domain.LDAP;
 using AMEBI.Domain.Model;
@@ -35,7 +36,7 @@ namespace AMEBI.Mvc
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IJwtService, JwtService>();
 
-            services.AddDbContext<Context>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
                 options.UseInMemoryDatabase("db"));
 
             services.AddAuthorization(options =>
@@ -61,10 +62,10 @@ namespace AMEBI.Mvc
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("test_key_123test_key_123test_key_123")),  
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["IssuerSigningKey"])),  
 
                     ValidateIssuer = true,  
-                    ValidIssuer = "http://localhost:5000",
+                    ValidIssuer = Configuration["ValidIssuer"],
 
                     ValidateAudience = false,   
                     ValidateLifetime = true,  
@@ -75,12 +76,13 @@ namespace AMEBI.Mvc
 
             services.AddOptions(); 
             services.Configure<LdapConfig>(Configuration);
+            services.Configure<AppConfig>(Configuration);
 
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {

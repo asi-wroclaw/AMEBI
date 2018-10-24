@@ -15,10 +15,10 @@ namespace AMEBI.Domain.Services
 {
     public class UserService : IUserService
     {
-        private readonly Context _context;
+        private readonly DatabaseContext _context;
         private readonly LdapConfig _config;
 
-        public UserService(Context context, IOptions<LdapConfig> config)
+        public UserService(DatabaseContext context, IOptions<LdapConfig> config)
         {
             _context = context;
             _config = config.Value;
@@ -39,7 +39,7 @@ namespace AMEBI.Domain.Services
         {
             using (var connection = new LdapConnection())
             {
-                connection.ConnectionTimeout = 10000;
+                connection.ConnectionTimeout = _config.ConnectionTimeout;
                 try
                 {
                     connection.Connect(_config.LdapHost, LdapConnection.DEFAULT_PORT);
@@ -72,9 +72,9 @@ namespace AMEBI.Domain.Services
             }
         }
 
-        public async Task LogoutAsync()
+        private bool CheckIntegrityOfUserDataWithLDAP()
         {
-            return;
+            
         }
     }
 }
