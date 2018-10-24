@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AMEBI.Domain.EF
 {
-    public class Context : DbContext
+    public class DatabaseContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
-        public Context(DbContextOptions<Context> options) 
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) 
             : base(options)
         {
 
         }
-
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
