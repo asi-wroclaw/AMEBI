@@ -71,10 +71,5 @@ namespace AMEBI.Domain.Services
                 }
             }
         }
-
-        private bool CheckIntegrityOfUserDataWithLDAP()
-        {
-            
-        }
     }
 }
