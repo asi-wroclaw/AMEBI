@@ -1,4 +1,4 @@
-namespace AMEBI.Domain.LDAP
+namespace AMEBI.Domain.Config
 {
     public class LdapConfig
     {
