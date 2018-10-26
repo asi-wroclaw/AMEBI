@@ -17,6 +17,7 @@ namespace AMEBI.Domain.Services
 
         public User Login(string username, string password)
         {
+            User loggedUser = null;
             using (var connection = new LdapConnection())
             {
                 connection.ConnectionTimeout = _config.ConnectionTimeout;
@@ -29,30 +30,21 @@ namespace AMEBI.Domain.Services
 
                     if (userLdapEntry != null)
                     {
-                        connection.Bind(userLdapEntry.DN, password);
-                        if (connection.Bound)
-                        {
-                            var loggedUser = new User
-                            {
-                                DisplayName = $"{userLdapEntry.getAttribute(_config.FirstNameAttribute).StringValue} {userLdapEntry.getAttribute(_config.LastNameAttribute).StringValue}",
-                                Username = userLdapEntry.getAttribute(_config.UsernameAttribute).StringValue
-                            };
-                            connection.Disconnect();
-
-                            return loggedUser;
-                        }
+                        loggedUser = BindUser(connection, userLdapEntry, password);
                     }
                     connection.Disconnect();
-
                 }
                 catch (LdapException ex)
                 {
                     Console.WriteLine(ex);
+                    if (connection.Connected)
+                    {
+                        connection.Disconnect();
+                    }
                 }
             }
-            return null;
+            return loggedUser;
         }
-
 
         private LdapEntry FindUser(string username, LdapConnection connection)
         {
@@ -60,6 +52,21 @@ namespace AMEBI.Domain.Services
             var result = connection.Search(_config.SearchBase, LdapConnection.SCOPE_SUB, searchFilter, new string[] { }, false);
             var userLdapEntry = result.next();
             return userLdapEntry;
+        }
+
+        private User BindUser(LdapConnection connection, LdapEntry userLdapEntry, string password)
+        {
+            connection.Bind(userLdapEntry.DN, password);
+            if (connection.Bound)
+            {
+                var loggedUser = new User
+                {
+                    DisplayName = $"{userLdapEntry.getAttribute(_config.FirstNameAttribute).StringValue} {userLdapEntry.getAttribute(_config.LastNameAttribute).StringValue}",
+                    Username = userLdapEntry.getAttribute(_config.UsernameAttribute).StringValue
+                };
+                return loggedUser;
+            }
+            return null;
         }
     }
 }
